@@ -50,3 +50,27 @@ Gradient clipping with max norm $1.0$ (no EMA or other smoothing in the reported
 
 **Random seeds.**  
 Ten fixed seeds: $42$, $123$, $456$, $789$, $1011$, $1213$, $1415$, $1617$, $1819$, $2021$.
+
+
+---
+
+## Appendix Figures
+
+### RQ1 ABROCA model (validation ABROCA)
+![rq1_abroca_val_abroca](figure/rq1_abroca_val_abroca.png)
+
+### RQ1 ABROCA model (validation AUC)
+![rq1_abroca_val_auc](figure/rq1_abroca_val_auc.png)
+
+### RQ1 CE model (validation ABROCA)
+![rq1_ce_val_abroca](figure/rq1_ce_val_abroca.png)
+
+### RQ1 CE model (validation AUC)
+![rq1_ce_val_auc](figure/rq1_ce_val_auc.png)
+
+### RQ1 Dual-objective model (validation ABROCA)
+![rq1_dual_val_abroca](figure/rq1_dual_val_abroca.png)
+
+### RQ1 Dual-objective model (validation AUC)
+![rq1_dual_val_auc](figure/rq1_dual_val_auc.png)
+
