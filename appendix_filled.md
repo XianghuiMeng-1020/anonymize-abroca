@@ -1,0 +1,52 @@
+# Appendix
+
+## Implementation details for ABROCA surrogate, operating points, and optimization
+
+### Numerical computation of test-set ABROCA
+
+To compute ABROCA in (2), we construct empirical ROC curves separately for each group on the test set. We evaluate both ROC curves on a shared monotone FPR grid that includes 0 and 1, and apply trapezoidal integration to the absolute difference between group TPRs.
+
+### Differentiable ABROCA surrogate: grids, interpolation, and integration
+
+**Threshold grid.** We use $N_{\text{bins}}=50$ equally spaced thresholds on $[0,1]$ (in code: `linspace(0.01, 0.99, 50)`).
+
+**Temperature.** We set $\tau=0.1$ (or anneal from $\tau_{\text{start}}=0.05$ to a lower value over epochs using exponential decay $\tau \times 0.5^{\lfloor \text{epoch}/(\text{epochs}/3)\rfloor}$).
+
+**Interpolation.** For each group, we obtain paired sequences $(\widetilde{\mathrm{FPR}}_g(t_k),\widetilde{\mathrm{TPR}}_g(t_k))$. We then construct a shared $\widetilde{\mathrm{FPR}}$ grid and linearly interpolate $\widetilde{\mathrm{TPR}}_g$ onto that grid before trapezoidal integration of the absolute difference.
+
+**Absolute value.** We use the standard subgradient for $|\cdot|$ (and, if needed, specify the tie convention).
+
+### Definitions and operating points for SPD and EOD
+
+SPD and EOD are computed under an outreach policy that flags the top $q\%$ of students on the test set (equivalently, top $K$ students for the test-set cohort size). For a chosen cutoff $q\%$ (equivalently $K$ for a fixed cohort size), let $\hat{Y}=1$ denote "flagged". Then:
+
+$$
+\begin{aligned}
+\mathrm{SPD} &= \Pr(\hat{Y}=1\mid A=0)-\Pr(\hat{Y}=1\mid A=1),\\
+\Delta \mathrm{TPR} &= \Pr(\hat{Y}=1\mid Y=1,A=0)-\Pr(\hat{Y}=1\mid Y=1,A=1),\\
+\Delta \mathrm{FPR} &= \Pr(\hat{Y}=1\mid Y=0,A=0)-\Pr(\hat{Y}=1\mid Y=0,A=1),\\
+\mathrm{EOD} &= \max\left(|\Delta \mathrm{TPR}|,\ |\Delta \mathrm{FPR}|\right).
+\end{aligned}
+$$
+
+We report the value(s) of $q$ used in each figure/table.
+
+### Optimization settings (held constant across paired runs)
+
+**Model.**  
+Logistic regression implemented in PyTorch.
+
+**Optimizer and learning rate.**  
+Adam; learning rate $0.01$; weight decay $0.001$.
+
+**Batching.**  
+Full-batch (no minibatching).
+
+**Early stopping.**  
+Patience $50$; maximum epochs $1000$; checkpoint criterion matches the training objective (CE vs. total loss).
+
+**Stabilization.**  
+Gradient clipping with max norm $1.0$ (no EMA or other smoothing in the reported runs).
+
+**Random seeds.**  
+Ten fixed seeds: $42$, $123$, $456$, $789$, $1011$, $1213$, $1415$, $1617$, $1819$, $2021$.
